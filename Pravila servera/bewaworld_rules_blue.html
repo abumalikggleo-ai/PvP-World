@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07172f">
+  <title>Правила — PvP Box</title>
+  <style>
+    :root {
+      --bg: #06101f;
+      --panel: #0b1b32;
+      --panel2: #102541;
+      --blue: #3998ff;
+      --blue2: #67c7ff;
+      --text: #eaf3ff;
+      --muted: #a9bdd6;
+      --note: #122b42;
+      --note-text: #8bd7ff;
+      --line: rgba(116, 184, 255, .14);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scrollbar-color: #2868a8 #07172f; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px 16px 48px;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 10% 0%, rgba(21, 111, 221, .22), transparent 38%),
+        radial-gradient(ellipse at 95% 20%, rgba(0, 196, 255, .10), transparent 34%),
+        var(--bg);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { width: min(100%, 1000px); margin: 0 auto; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin: 0 0 22px; padding: 0 4px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-icon {
+      display: grid; place-items: center; flex: 0 0 46px; height: 46px;
+      border: 1px solid rgba(114, 195, 255, .35); border-radius: 15px;
+      background: linear-gradient(145deg, #258cff, #0750a5);
+      box-shadow: 0 8px 28px rgba(0, 119, 255, .22);
+      color: white; font-weight: 900; font-size: 19px;
+    }
+    .brand-name { font-weight: 850; font-size: 18px; letter-spacing: .2px; }
+    .brand-sub { color: var(--muted); font-size: 12px; margin-top: 1px; }
+    .status {
+      display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+      padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(12, 35, 62, .72); color: #b8ddff; font-size: 12px;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #50c8ff; box-shadow: 0 0 12px #319dff; }
+    .hero {
+      position: relative; overflow: hidden; padding: 34px;
+      border: 1px solid rgba(93, 174, 255, .24); border-radius: 26px;
+      background: linear-gradient(120deg, rgba(17, 54, 94, .98), rgba(9, 27, 51, .98) 68%);
+      box-shadow: 0 18px 55px rgba(0, 0, 0, .23), inset 0 1px rgba(255,255,255,.04);
+      margin-bottom: 18px;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 260px; height: 260px; right: -70px; top: -110px;
+      border-radius: 50%; border: 1px solid rgba(101, 194, 255, .22);
+      box-shadow: 0 0 0 28px rgba(69, 159, 255, .035), 0 0 0 58px rgba(69, 159, 255, .025);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;
+      color: var(--blue2); font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 20px; height: 2px; background: var(--blue2); border-radius: 2px; }
+    h1 { margin: 0; max-width: 650px; font-size: clamp(29px, 5vw, 43px); line-height: 1.14; letter-spacing: -1.2px; }
+    .hero p { margin: 13px 0 0; max-width: 580px; color: #b7cce5; font-size: 15px; }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .stat {
+      padding: 8px 12px; border: 1px solid rgba(135, 195, 255, .17);
+      border-radius: 10px; background: rgba(3, 17, 34, .25); color: #cde5ff; font-size: 12px;
+    }
+    .section {
+      overflow: hidden; border: 1px solid var(--line); border-radius: 22px;
+      background: rgba(8, 24, 44, .92); box-shadow: 0 15px 45px rgba(0,0,0,.15);
+    }
+    .section-title {
+      display: flex; align-items: center; gap: 14px; padding: 22px 25px;
+      background: linear-gradient(100deg, rgba(28, 100, 170, .30), rgba(13, 36, 64, .55));
+      border-bottom: 1px solid var(--line);
+    }
+    .section-number {
+      display: grid; place-items: center; flex: 0 0 42px; height: 42px;
+      border-radius: 13px; background: linear-gradient(145deg, #319cff, #1464c5);
+      color: white; font-size: 15px; font-weight: 900;
+      box-shadow: 0 6px 20px rgba(29, 129, 255, .23);
+    }
+    .section-title h2 { margin: 0; font-size: clamp(17px, 2.5vw, 21px); font-weight: 800; }
+    .section-title p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .rules-content { padding: 23px 25px 10px; }
+    .rule {
+      display: grid; grid-template-columns: 45px minmax(0, 1fr); gap: 0;
+      margin: 0 0 19px; align-items: start;
+    }
+    .rule-number { color: var(--blue2); font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; padding-top: 1px; }
+    .rule-text { min-width: 0; color: #d2deed; font-size: 14px; }
+    .explanation {
+      margin: -5px 0 20px 45px; padding: 13px 16px;
+      border: 1px solid rgba(69, 169, 255, .16); border-left: 3px solid var(--blue);
+      border-radius: 11px; background: linear-gradient(100deg, rgba(17, 59, 91, .72), rgba(13, 38, 62, .65));
+      color: var(--note-text); font-size: 13px; line-height: 1.65;
+    }
+    .explanation strong { color: #b9e9ff; }
+    .bottom-note {
+      display: flex; gap: 12px; align-items: flex-start; margin: 18px 0 0;
+      padding: 15px 17px; border: 1px solid var(--line); border-radius: 14px;
+      background: rgba(10, 29, 51, .65); color: var(--muted); font-size: 12px;
+    }
+    .info-icon {
+      display: grid; place-items: center; flex: 0 0 24px; height: 24px;
+      border-radius: 8px; background: rgba(50, 147, 255, .17); color: var(--blue2); font-weight: 900;
+    }
+    footer { padding: 24px 10px 0; color: #7890ad; text-align: center; font-size: 12px; }
+    footer span { color: #8bcfff; font-weight: 700; }
+    @media (max-width: 600px) {
+      body { padding: 16px 10px 30px; }
+      .topbar { margin-bottom: 15px; }
+      .brand-icon { flex-basis: 40px; height: 40px; border-radius: 13px; }
+      .brand-name { font-size: 16px; }
+      .status { padding: 7px 9px; font-size: 10px; }
+      .hero { padding: 25px 21px; border-radius: 21px; }
+      .hero p { font-size: 14px; }
+      .section { border-radius: 18px; }
+      .section-title { padding: 18px 16px; gap: 11px; }
+      .section-number { flex-basis: 37px; height: 37px; border-radius: 11px; }
+      .rules-content { padding: 19px 15px 5px; }
+      .rule { grid-template-columns: 39px minmax(0, 1fr); margin-bottom: 17px; }
+      .rule-text { font-size: 13px; }
+      .explanation { margin-left: 39px; padding: 11px 12px; font-size: 12px; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero, .section { animation: appear .55s ease both; }
+      .section { animation-delay: .07s; }
+      @keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    }
+    ::selection { background: #318cff; color: white; }
+  
+    .explanation {
+      transform: translateZ(0);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+      transform-origin: center;
+      position: relative;
+      z-index: 0;
+    }
+    .explanation:hover {
+      transform: scale(1.012);
+      border-color: rgba(103, 199, 255, .48);
+      box-shadow: 0 7px 24px rgba(0, 115, 255, .13);
+      z-index: 1;
+    }
+    .reading-status {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 36px);
+      padding: 11px 14px;
+      border: 1px solid rgba(103, 199, 255, .28);
+      border-radius: 14px;
+      background: rgba(7, 23, 45, .94);
+      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+      color: #dceeff;
+      font-size: 12px;
+      backdrop-filter: blur(12px);
+    }
+    .reading-status .reading-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #67c7ff; box-shadow: 0 0 12px rgba(103,199,255,.8);
+      flex: 0 0 8px;
+    }
+    .reading-status strong { color: #67c7ff; font-variant-numeric: tabular-nums; }
+    .reading-progress {
+      position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+      z-index: 60; background: rgba(103,199,255,.12);
+    }
+    .reading-progress > span {
+      display: block; width: 0; height: 100%;
+      background: linear-gradient(90deg, #248cff, #67d8ff);
+      box-shadow: 0 0 12px rgba(64,170,255,.65);
+      transition: width .12s linear;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .explanation { transition: none; }
+      .explanation:hover { transform: none; }
+    }
+
+  
+    .project-name {
+      position: relative;
+      display: inline-grid;
+      min-width: 112px;
+      cursor: pointer;
+      perspective: 350px;
+      outline-offset: 4px;
+    }
+    .project-name-main,
+    .project-name-alt {
+      grid-area: 1 / 1;
+      display: inline-block;
+      transform-origin: 50% 80%;
+      transition: transform .38s cubic-bezier(.2,.8,.2,1), opacity .22s ease, filter .3s ease;
+      white-space: nowrap;
+    }
+    .project-name-main { opacity: 1; transform: translateY(0) rotateX(0); filter: blur(0); }
+    .project-name-alt { opacity: 0; transform: translateY(-13px) rotateX(70deg); filter: blur(3px); color: #67c7ff; }
+    .project-name:hover .project-name-main,
+    .project-name:focus-visible .project-name-main {
+      opacity: 0;
+      transform: translateY(20px) rotateX(-70deg);
+      filter: blur(3px);
+    }
+    .project-name:hover .project-name-alt,
+    .project-name:focus-visible .project-name-alt {
+      opacity: 1;
+      transform: translateY(0) rotateX(0);
+      filter: blur(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .project-name-main, .project-name-alt { transition: none; }
+    }
+
+  
+    .project-art {
+      margin: 20px 0 0;
+      padding: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(103, 199, 255, .22);
+      border-radius: 22px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(43, 143, 255, .16), transparent 65%),
+        rgba(8, 24, 44, .78);
+      text-align: center;
+    }
+    .project-art img {
+      display: block;
+      width: min(100%, 520px);
+      max-height: 360px;
+      object-fit: contain;
+      margin: 0 auto;
+      border-radius: 14px;
+      filter: drop-shadow(0 10px 28px rgba(0, 116, 255, .16));
+      transition: transform .25s ease, filter .25s ease;
+    }
+    .project-art img:hover {
+      transform: scale(1.025);
+      filter: drop-shadow(0 12px 34px rgba(0, 155, 255, .28));
+    }
+    .project-art figcaption {
+      margin-top: 12px;
+      color: #8ecfff;
+      font-size: 12px;
+      letter-spacing: .5px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .project-art img { transition: none; }
+      .project-art img:hover { transform: none; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="reading-progress" aria-hidden="true"><span id="readingProgressBar"></span></div>
+  <div class="reading-status" role="status" aria-live="polite">
+    <span class="reading-dot"></span>
+    <span>Авточиталка: <strong id="readingPercent">0%</strong> · <span id="readingSection">Начало правил</span></span>
+  </div>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">BW</div>
+        <div>
+          <div class="brand-name project-name" tabindex="0" aria-label="PvP Box, при наведении отображается PvP World">
+            <span class="project-name-main">PvP Box</span>
+            <span class="project-name-alt" aria-hidden="true">PvP World</span>
+          </div>
+          <div class="brand-sub">Официальные правила проекта</div>
+        </div>
+      </div>
+      <div class="status"><span class="status-dot"></span> Правила сервера</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">PvP Box • Community</div>
+      <h1>Правила проекта</h1>
+      <p>Перед началом игры ознакомьтесь с правилами. Играя на сервере, вы соглашаетесь соблюдать установленные требования.</p>
+      <div class="hero-stats">
+        <div class="stat">◆ Честная игра</div>
+        <div class="stat">◆ Уважение игроков</div>
+        <div class="stat">◆ Единые правила</div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Общие правила">
+      <div class="section-title">
+        <div class="section-number">01</div>
+        <div>
+          <h2>Общее положение</h2>
+          <p>Основные правила для всех игроков</p>
+        </div>
+      </div>
+
+      <div class="rules-content">
+        <div class="rule">
+          <div class="rule-number">1.1.</div>
+          <div class="rule-text">При регистрации на сервере, Вы автоматически принимаете данный свод правил, а также подтверждаете свое согласие на рассылку Вам рекламных сообщений или уведомлений через сообщество Вконтакте.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">1.2.</div>
+          <div class="rule-text">На проекте действует прецедентная система правил. Если игрок совершил правонарушение, которое не описано ни в каких правилах проекта, то он может быть наказан с разрешения Гл.Администрации. Это сделано не с целью выдумывать правила «на ходу» и наказывать по ним, а потому что все мы люди, могли что-то забыть и не учесть.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">1.3.</div>
+          <div class="rule-text">Незнание правил не освобождает Вас от ответственности.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">1.4.</div>
+          <div class="rule-text">Все игроки обязаны соблюдать все текущие правила.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">1.5.</div>
+          <div class="rule-text">Администрация не компенсирует средства, услуги, предметы и т.д., которые были утрачены в силу функционального воздействия/задумки системы.</div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> подразумеваемое изъятие происходит без участия администрации либо других лиц. Например, если Вы не успели вовремя забрать предмет с аукциона и он у Вас пропал.</aside>
+
+        <div class="rule">
+          <div class="rule-number">1.6.</div>
+          <div class="rule-text">Администрация не несет ответственности за потерю игровых ценностей вследствие нарушения работоспособности сервера или его плагинов.</div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> при атаке на сервер со стороны (DDoS), Вас выбросило из игры в режиме боя и Вы потеряли ресурсы.</aside>
+
+        <div class="rule">
+          <div class="rule-number">1.7.</div>
+          <div class="rule-text">Данный свод правил может изменяться без уведомления игрока.</div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" aria-label="Правила чата" style="margin-top:18px">
+      <div class="section-title">
+        <div class="section-number">02</div>
+        <div>
+          <h2>Правила чата</h2>
+          <p>Общение в игровых чатах проекта</p>
+        </div>
+      </div>
+
+      <div class="rules-content">
+        <div class="rule">
+          <div class="rule-number">2.1.</div>
+          <div class="rule-text">Данный свод правил применяется ко всем внутриигровым чатам.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">2.2.</div>
+          <div class="rule-text">Запрещён капс, флуд и спам в любом из чатов. <span style="color:#ff626d">(Мут 30 минут)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> капс — использование в сообщении более 50% заглавных букв, от 5 символов включительно. Флуд сообщениями — 3 одинаковых сообщения подряд в течение 30 секунд. Флуд символами — одинаковые символы (до 10 штук), которые не несут смысловой нагрузки.<br><br><strong>Исключения:</strong> сообщение «ОН МЕНЯ ХОТЕЛ УБИТЬ» не считается капсом, если доля заглавных букв не превышает 50%. В остальных случаях администрация оценивает сообщение по общему контексту.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.3.</div>
+          <div class="rule-text">Запрещена организация флуда и попрошайничество в любом виде. <span style="color:#ff626d">(Мут 30 минут)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> запрещены бессмысленные сообщения, рассчитанные на массовые ответы. Например: «кому кит? + в чат».<br><br><strong>Исключения:</strong> обычные вопросы по игре, например «сколько стоит арбуз?» или «кто со мной PvP?», сами по себе нарушением не являются.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.4.</div>
+          <div class="rule-text">Запрещено завуалированное оскорбление или упоминание родственников в оскорбительном либо шуточном характере. <span style="color:#ff626d">(Бан 5 дней)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> пример сообщения — «твой батя похож на жигуль». К этому правилу также относятся завуалированные оскорбления и аббревиатуры, используемые для оскорбления родственников.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.5.</div>
+          <div class="rule-text">Запрещено прямое оскорбление родителей. <span style="color:#ff626d">(Бан 10 дней)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> прямое оскорбление родителей или других родственников, в котором присутствует оскорбительный смысл, считается нарушением.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.6.</div>
+          <div class="rule-text">Запрещено распространение информации, связанной с экстремизмом. <span style="color:#ff626d">(Мут 30 минут)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> запрещено распространять материалы и сведения экстремистского характера, в том числе источники, распространение которых запрещено применимым законодательством.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.7.</div>
+          <div class="rule-text">Запрещено упоминать или рекламировать посторонние ресурсы, которые никак не связаны с проектом. <span style="color:#ff626d">(Бан навсегда)</span></div>
+        </div>
+        <aside class="explanation"><strong>Исключения:</strong> фразы вроде «Всем пока, я на Сатурн» не считаются рекламой сами по себе, если игрок не приглашает других на сторонний проект. Реклама собственных социальных сетей (ролики на YouTube, стримы или каналы) разрешена для одобренных медиа-игроков проекта.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.8.</div>
+          <div class="rule-text">Запрещены любые оскорбления проекта. <span style="color:#ff626d">(Бан 14 дней)</span></div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">2.9.</div>
+          <div class="rule-text">Запрещены любые оскорбления и унижения игроков или сотрудников проекта. <span style="color:#ff626d">(Мут 30 минут)</span></div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">2.10.</div>
+          <div class="rule-text">Запрещены разжигание национальной розни, подстрекательство на эту тему и расизм. <span style="color:#ff626d">(Бан 5 дней)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> правило направлено на предотвращение дискриминации, разжигания ненависти и экстремистских высказываний.</aside>
+
+        <div class="rule">
+          <div class="rule-number">2.11.</div>
+          <div class="rule-text">Запрещено угрожать баном или расправой в реальном мире. <span style="color:#ff626d">(Бан 1 день)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> примеры сообщений: «я сейчас попрошу друга забанить тебя, если ты…», «я тебя забаню» или угрозы причинить вред в реальном мире. В серьёзных случаях сообщения могут быть переданы правоохранительным органам для дальнейшего рассмотрения.</aside>
+      </div>
+    </section>
+
+
+    <section class="section" aria-label="Игровой процесс" style="margin-top:18px">
+      <div class="section-title">
+        <div class="section-number">03</div>
+        <div>
+          <h2>Игровой процесс</h2>
+          <p>Честная игра и правила взаимодействия с сервером</p>
+        </div>
+      </div>
+
+      <div class="rules-content">
+        <div class="rule">
+          <div class="rule-number">3.1.</div>
+          <div class="rule-text">Запрещена любая помеха работе администрации. <span style="color:#ff626d">(Кик или бан на 10 минут; при повторных нарушениях после первых 3 — кик)</span></div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">3.2.</div>
+          <div class="rule-text">Запрещено скрывать от администрации баги/уязвимости системы, а также их распространять. <span style="color:#ff626d">(Бан от 1 дня — навсегда, в зависимости от нарушения)</span></div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">3.3.</div>
+          <div class="rule-text">Запрещено использовать баги/уязвимости/дюпы. <span style="color:#ff626d">(Бан от 1 дня — навсегда, в зависимости от нарушения)</span></div>
+        </div>
+        <aside class="explanation"><strong>Исключения:</strong> баги, возникающие при использовании кирки на эффективность 10, проход через двери и блоки эндер-жемчугом.</aside>
+
+        <div class="rule">
+          <div class="rule-number">3.4.</div>
+          <div class="rule-text">Запрещено скрывать от администрации злоумышленников. <span style="color:#ff626d">(Бан 7 дней)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> если Вы играете с читером в тиме и знаете, что он читер, Вы попадаете под это правило и Вас могут заблокировать.</aside>
+
+        <div class="rule">
+          <div class="rule-number">3.5.</div>
+          <div class="rule-text">Запрещено выдавать себя за администратора сервера. <span style="color:#ff626d">(Бан 7 дней)</span></div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">3.6.</div>
+          <div class="rule-text">Запрещено наносить вред экономике. <span style="color:#ff626d">(Бан навсегда)</span></div>
+        </div>
+        <aside class="explanation"><strong>Исключения:</strong> стоять АФК на спавне или на фермах, фармить реварды можно с лимитом в 10 аккаунтов.</aside>
+
+        <div class="rule">
+          <div class="rule-number">3.7.</div>
+          <div class="rule-text">Запрещено использование стороннего ПО для получения игрового преимущества или упрощения процесса игры, а именно:</div>
+        </div>
+        <aside class="explanation">
+          <strong>Сторонние программы</strong> — <span style="color:#ff626d">бан 30 дней</span><br>
+          <strong>Скрипты</strong> — <span style="color:#ff626d">бан 14 дней</span><br>
+          <strong>Читы</strong> — <span style="color:#ff626d">бан 30 дней</span><br>
+          <strong>Моды из запрещённого списка</strong> — <span style="color:#ff626d">бан 14–30 дней</span><br>
+          <strong>Хранение читов или стороннего ПО</strong> — запрещено.
+        </aside>
+
+        <div class="rule">
+          <div class="rule-number">3.8.</div>
+          <div class="rule-text">Запрещено зазывать на закрытые варпы. <span style="color:#ff626d">(Бан на 1 день; после 2-х повторных нарушений — бан на 3 дня)</span></div>
+        </div>
+        <aside class="explanation">
+          <strong>Пояснение:</strong> если варп закрыт блоками, но в него никто не зазывает и не просит телепортироваться, это разрешено.<br>
+          <strong>Список того, что должно быть на варпе, который можно рекламировать:</strong><br>
+          • Запрещено устанавливать ловушку менее чем на 20 блоков от варпа.<br>
+          • Запрещено зазывать на «одинокие» варпы с открытыми входами, в которых добавлена точка, запятая и другие знаки (например, /warp pvp и /warp pvp.).<br>
+          • Выход с варпа должен быть проходимым, без помех по пути (верстаки, калитки, люки, двери и т.п.).<br>
+          • Запрещено зазывать на закрытый варп с твинка — карается блокировкой обоих аккаунтов.<br>
+          • Запрещено устанавливать обсидиан, который используется для кристаллов, менее чем на 15 блоков от варпа.<br>
+          • С варпа должен быть свободный выход минимум 2×1 блок (чтобы можно было выйти без использования эндер-жемчуга/хорусa).<br>
+          • С варпа можно выйти, играя с любой версии Minecraft, с которой разрешён вход на проект.<br>
+          • Длина выхода с варпа должна быть не более 20 блоков.<br>
+          • Выход с варпа должен оставаться визуально доступным и не быть закрыт объектами (картинами, рамками и другими декоративными элементами).
+        </aside>
+
+        <div class="rule">
+          <div class="rule-number">3.9.</div>
+          <div class="rule-text">Запрещено подстрекать на нарушение правил. <span style="color:#ff626d">(Бан 3 дня)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> если игрок просит кого-либо за вознаграждение или без него нарушить какое-либо правило, это считается подстрекательством. Если по просьбе нарушение не было совершено, наказание может быть выдано только инициатору. Например: игрок пишет «Дай 5 млн монет за оскорбление админа» — это сообщение попадает под данный пункт.</aside>
+
+        <div class="rule">
+          <div class="rule-number">3.10.</div>
+          <div class="rule-text">Запрещено играть на проекте, если у Вас уже заблокировано 5 и более аккаунтов пунктом 3.7 (использование читов). <span style="color:#ff626d">(Бан всех новых аккаунтов на 30 дней)</span></div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">3.11.</div>
+          <div class="rule-text">Запрещено играть в любом виде с союзниками больше, чем указано на режимах с ограничениями игроков в команде. <span style="color:#ff626d">(Бан 7 дней)</span></div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" aria-label="Положение об аккаунте" style="margin-top:18px">
+      <div class="section-title">
+        <div class="section-number">04</div>
+        <div>
+          <h2>Положение об аккаунте</h2>
+          <p>Безопасность аккаунта и правила передачи</p>
+        </div>
+      </div>
+
+      <div class="rules-content">
+        <div class="rule">
+          <div class="rule-number">4.1.</div>
+          <div class="rule-text">Администрация не несёт ответственности за аккаунт игрока в случае его передачи/взлома/обмана и т.д.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">4.2.</div>
+          <div class="rule-text">Ответственность за аккаунт несёт его владелец, независимо от того, кто совершал действия на аккаунте.</div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> Ваш аккаунт подвергся взлому, и с Вашего аккаунта пропали услуги/валюта/предметы. В этом случае Вы несёте за это ответственность.<br><strong>Исключения:</strong> донат может быть возвращён, если Вы докажете факт взлома и после экспертизы он подтвердится.</aside>
+
+        <div class="rule">
+          <div class="rule-number">4.3.</div>
+          <div class="rule-text">Запрещена продажа/обмен/передача игровых аккаунтов. <span style="color:#ff626d">(Бан навсегда)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> любой сменившийся IP, который отличается более чем на 100 км от регистрационного IP, может расцениваться как передача аккаунта. Администрация вправе проверить игрока.</aside>
+
+        <div class="rule">
+          <div class="rule-number">4.4.</div>
+          <div class="rule-text">Запрещено продавать/покупать у игроков внутриигровые ценности за реальную валюту. <span style="color:#ff626d">(Бан навсегда)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> когда игрок отдаёт или получает что-либо на сервере, например «Голду Сундуков», это может являться нарушением правил сервера.<br><br><strong>Исключения:</strong> покупка игровых ценностей через официальный сайт проекта разрешена, если она предусмотрена правилами проекта. Обмен игровых денег или вещей на донат-кейс/привилегию, которая приобретается через официальный сайт сервера, не считается нарушением, если такой обмен разрешён проектом.</aside>
+
+        <div class="rule">
+          <div class="rule-number">4.5.</div>
+          <div class="rule-text">Запрещено иметь никнейм: <span style="color:#ff626d">(Бан навсегда)</span></div>
+        </div>
+        <aside class="explanation">
+          • С матами/унижениями/оскорблениями.<br>
+          • Содержащий название чит-клиента или стороннего проекта.<br>
+          • Похожий на ник администратора или официального ютубера проекта.<br><br>
+          <strong>Исключения:</strong> если имя изменено через внутриигровую команду /nick, наказание за нарушение этого правила — бан на 1 день после 2-х предупреждений от модератора.
+        </aside>
+
+        <div class="rule">
+          <div class="rule-number">4.6.</div>
+          <div class="rule-text">Донат невозможно перенести на другой аккаунт/ник.</div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" aria-label="Правила проверок" style="margin-top:18px">
+      <div class="section-title">
+        <div class="section-number">05</div>
+        <div>
+          <h2>Правила проверок</h2>
+          <p>Порядок прохождения проверки администрацией</p>
+        </div>
+      </div>
+
+      <div class="rules-content">
+        <div class="rule">
+          <div class="rule-number">5.1.</div>
+          <div class="rule-text">Вы обязаны выполнять требования Проверяющего.</div>
+        </div>
+        <aside class="explanation"><strong style="color:#ff626d">Важно!</strong> Проверка проводится исключительно в целях поиска читов, запрещённых модификаций, программ и другого запрещённого ПО. Поэтому если Проверяющий просит Вас выполнить непонятные для проверки действия (включить веб-камеру, «покрасить», дать ему ресурсы) — отказывайтесь от проверки и срочно сообщите об этом Администрации.</aside>
+
+        <div class="rule">
+          <div class="rule-number">5.2.</div>
+          <div class="rule-text">Данный свод правил не окончателен и может изменяться в зависимости от требований Проверяющего.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.3.</div>
+          <div class="rule-text">Следите за чатом во время проверки. Если Вы не увидели/проигнорировали сообщение от Проверяющего — это не будет расцениваться поводом для разблокировки аккаунта.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.4.</div>
+          <div class="rule-text">В случае если у Вас возникли непреодолимые обстоятельства, необходимо обязательно сообщить об этом Проверяющему.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.5.</div>
+          <div class="rule-text">Запрещается препятствовать проведению проверки: долго открывать папки, задавать неуместные вопросы, оскорблять/унижать Проверяющего, игнорировать его требования и так далее.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.6.</div>
+          <div class="rule-text">Во время проверки запрещается удалять какие-либо файлы с Вашего ПК, в том числе очищать корзину.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.7.</div>
+          <div class="rule-text">Во время проверки запрещается выходить из Minecraft. «Крашнул майн», «был в АФК» — не расцениваются как повод для разблокировки аккаунта.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.8.</div>
+          <div class="rule-text">Ход проверки разрешено снимать.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-number">5.9.</div>
+          <div class="rule-text">Проверяющий имеет право попросить Вас установить программы для эффективного и быстрого проведения проверки.</div>
+        </div>
+        <aside class="explanation">
+          <strong>Список программ и утилит, указанных в правилах:</strong><br><br>
+          <strong>AnyDesk</strong> — приложение для удалённого рабочего стола. Позволяет другому человеку управлять Вашим ПК. Вы можете в любой момент отключить программу.<br>
+          <strong>Everything</strong> — программа, при помощи которой осуществляется мгновенный поиск по папкам, названиям или весу файлов.<br>
+          <strong>JournalTrace</strong> — программа для просмотра журналов, которые показывают действия пользователя с файлами и папками.<br>
+          <strong>Process Hacker 2</strong> — программа, позволяющая просматривать память устройства и свойства процессов.<br>
+          <strong>SystemInformer</strong> — программа для просмотра памяти устройства и свойств процессов.<br>
+          <strong>USB-DriveLog</strong> — программа для просмотра подключений и отключений внешних USB-носителей.<br>
+          <strong>ExecutedProgramsList</strong> — программа для просмотра ранее запускавшихся приложений.<br>
+          <strong>WinPrefetchView</strong> — программа для анализа Prefetch и ранее запускавшихся приложений.<br>
+          <strong>ингжен</strong> — программа для генерации и проверки данных, может выявлять стороннее вмешательство и использование читов.<br>
+          <strong>энчо-userassist</strong> — утилита для просмотра данных UserAssist, помогает определить, какие программы запускались на устройстве.<br>
+          <strong>энчо-journal</strong> — программа для анализа системного журнала и действий пользователя с файлами и папками.<br>
+          <strong>энчо-BAM</strong> — программа для анализа Background Activity Monitor, показывает активность приложений и их запуск в системе.<br>
+          <strong>WinDefLogView</strong> — программа для просмотра логов Microsoft Defender, помогает обнаруживать подозрительную активность.<br>
+          <strong>BrowserDownloadsView</strong> — утилита для просмотра истории загрузок в браузерах.<br>
+          <strong>ShellBagsView</strong> — программа для просмотра истории открытия папок в системе, включая удалённые директории.<br>
+          <strong>LastActivityView</strong> — программа для просмотра последней активности пользователя на устройстве: запусков программ, открытий файлов, подключений внешних носителей и других действий.<br><br>
+          <strong style="color:#ff626d">Важно!</strong> Кураторы и Главная Администрация могут попросить установить другие программы.
+        </aside>
+      </div>
+    </section>
+
+
+    <section class="section" aria-label="Правила для донатеров" style="margin-top:18px">
+      <div class="section-title">
+        <div class="section-number">06</div>
+        <div>
+          <h2>Правила для донатеров</h2>
+          <p>Дополнительные требования для обладателей привилегий</p>
+        </div>
+      </div>
+
+      <div class="rules-content">
+        <div class="rule">
+          <div class="rule-number">6.1.</div>
+          <div class="rule-text">Нельзя злоупотреблять своими донатерскими правами. <span style="color:#ff626d">(Бан 1 день. После 3-х повторных нарушений — бан на 7 дней)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> запрещено использовать режимы god/fly/vanish/spec/jump для утраты ресурсов или раскрытия местоположения игрока (координат).<br><strong>А ещё запрещается:</strong><br>• Телепорт к игроку через слежку или команду /tp без причины.<br>• Подкидывание удочек в режиме fly.<br>• Догонять игрока в режиме fly, чтобы дать ему режим боя (КТ).<br>• Находиться в ловушках или мешать игрокам в режиме боя/креатива.<br>• Портить ландшафт карты или заливать регионы/карту лавой/водой в режиме креатива.</aside>
+
+        <div class="rule">
+          <div class="rule-number">6.2.</div>
+          <div class="rule-text">Запрещено наказывать игроков, которые не нарушали правила. Перед тем как Вы блокируете чат игрока, у Вас должны быть весомые доказательства нарушения (видео/скриншот). <span style="color:#ff626d">(Варн + бан 7 дней. При повторном нарушении — бан на 30 дней)</span></div>
+        </div>
+        <aside class="explanation"><strong>Пояснение:</strong> доказательства нарушения обязаны храниться у Вас 7 дней. Их может запросить любой администратор/куратор или сам игрок через жалобу на Вас. Если доказательств нет — Вы будете наказаны.</aside>
+
+        <div class="rule">
+          <div class="rule-number">6.3.</div>
+          <div class="rule-text">Запрещено наказывать игроков, которые являются командой проекта (Стажёр, Хелпер, Гл.Хелпер, Модер, Ст.Модер). <span style="color:#ff626d">(Бан 7 дней)</span></div>
+        </div>
+      </div>
+    </section>
+
+
+    <figure class="project-art">
+      <img src="pvp_world.png" alt="Изображение проекта PvP Box / PvP World" loading="lazy">
+      <figcaption>PvP Box · Играй честно. Играй вместе.</figcaption>
+    </figure>
+
+    <div class="bottom-note">
+      <div class="info-icon">i</div>
+      <div>Продолжая играть на PvP Box, вы подтверждаете, что ознакомились с правилами и обязуетесь их соблюдать.</div>
+    </div>
+    <footer>© PvP Box · <span>Играй честно. Играй вместе.</span></footer>
+  </main>
+
+  <script>
+    (() => {
+      const progressBar = document.getElementById('readingProgressBar');
+      const percentLabel = document.getElementById('readingPercent');
+      const sectionLabel = document.getElementById('readingSection');
+      const sections = Array.from(document.querySelectorAll('main.page .section'));
+      let scheduled = false;
+
+      function updateReadingProgress() {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollable <= 0 ? 100 : Math.min(100, Math.max(0, Math.round((window.scrollY / scrollable) * 100)));
+        progressBar.style.width = progress + '%';
+        percentLabel.textContent = progress + '%';
+
+        let currentSection = 'Начало правил';
+        for (const section of sections) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= window.innerHeight * 0.45) {
+            const heading = section.querySelector('h2');
+            if (heading) currentSection = heading.textContent.trim();
+          }
+        }
+        if (progress >= 100) currentSection = 'Правила прочитаны';
+        sectionLabel.textContent = currentSection;
+        scheduled = false;
+      }
+
+      function requestProgressUpdate() {
+        if (scheduled) return;
+        scheduled = true;
+        window.requestAnimationFrame(updateReadingProgress);
+      }
+
+      window.addEventListener('scroll', requestProgressUpdate, { passive: true });
+      window.addEventListener('resize', requestProgressUpdate);
+      window.addEventListener('load', requestProgressUpdate);
+      updateReadingProgress();
+    })();
+  </script>
+
+</body>
+</html>
