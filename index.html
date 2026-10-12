@@ -246,7 +246,7 @@
     .project-art img {
       display: block;
       width: min(100%, 520px);
-      max-height: 360px;
+      max-height: 280px;
       object-fit: contain;
       margin: 0 auto;
       border-radius: 14px;
@@ -266,6 +266,57 @@
     @media (prefers-reduced-motion: reduce) {
       .project-art img { transition: none; }
       .project-art img:hover { transform: none; }
+    }
+
+
+    .project-art-swap {
+      position: relative;
+      width: min(100%, 560px);
+      margin: 0 auto;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      isolation: isolate;
+    }
+    .project-art-swap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 360px;
+      object-fit: contain;
+      margin: 0;
+      border-radius: 0;
+      transition: opacity .65s ease, transform .65s ease, filter .65s ease;
+    }
+    .project-art-swap .project-art-main {
+      position: relative;
+      z-index: 1;
+      opacity: 1;
+      transform: scale(1);
+    }
+    .project-art-swap .project-art-discord {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      height: 100%;
+      opacity: 0;
+      transform: scale(.96);
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .project-art-swap:hover .project-art-main,
+    .project-art-swap:focus-visible .project-art-main {
+      opacity: 0;
+      transform: scale(1.025);
+      filter: blur(3px);
+    }
+    .project-art-swap:hover .project-art-discord,
+    .project-art-swap:focus-visible .project-art-discord {
+      opacity: 1;
+      transform: scale(1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .project-art-swap img { transition: none; }
     }
 
   </style>
@@ -682,7 +733,10 @@
 
 
     <figure class="project-art">
-      <img src="pvp_world.png" alt="Изображение проекта PvP Box / PvP World" loading="lazy">
+      <div class="project-art-swap" tabindex="0" aria-label="PvP World. Наведите курсор, чтобы увидеть Discord">
+        <img class="project-art-main" src="pvp_world.png" alt="PvP World — Играй честно. Играй вместе." loading="lazy">
+        <img class="project-art-discord" src="discord.png" alt="Discord" loading="lazy">
+      </div>
       <figcaption>PvP Box · Играй честно. Играй вместе.</figcaption>
     </figure>
 
